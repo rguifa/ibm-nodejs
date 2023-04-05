@@ -23,12 +23,48 @@ let users = [
     },
 ];
 
+function getDateFromString(strDate) {
+  let [dd, mm,yyyy] = strDate.split('-');
+  return new Date(yyyy+"/"+mm+"/"+dd);
+}
+
 // GET request: Retrieve all users
 router.get("/",(req,res)=>{
   // Copy the code here
   // res.send("Yet to be implemented")//This line is to be replaced with actual return value
-  res.send(users);
+  res.send(JSON.stringify({users}, null, 4));
 });
+
+//GET users with particular last name eg: Smith
+router.get("/lastName/:lastName", (req,res) => {
+  const lastName = req.params.lastName;
+  let filtered_lastName = users.filter((user) => user.lastName === lastName);
+  res.send(filtered_lastName);
+
+});
+
+// Sorts users by DOB Asc;
+router.get("/sortAsc",(req,res)=>{
+//   let sorted_users=users.sort(function(a, b) {
+//       let d1 = getDateFromString(a.DOB);
+//       let d2 = getDateFromString(b.DOB);
+//           return d1-d2;
+//         });
+  let sorted_users = users.sort((a,b) => getDateFromString(a.DOB) - getDateFromString(b.DOB));
+  res.send(sorted_users);
+});
+
+// Sorts users by DOB Desc;
+router.get("/sortDesc",(req,res)=>{
+  //   let sorted_users=users.sort(function(a, b) {
+  //       let d1 = getDateFromString(a.DOB);
+  //       let d2 = getDateFromString(b.DOB);
+  //           return d1-d2;
+  //         });
+    let sorted_users = users.sort((a,b) => getDateFromString(a.DOB) - getDateFromString(b.DOB));
+    sorted_users.reverse();
+    res.send(sorted_users);
+  });
 
 // GET by specific ID request: Retrieve a single user with email ID
 router.get("/:email",(req,res)=>{
